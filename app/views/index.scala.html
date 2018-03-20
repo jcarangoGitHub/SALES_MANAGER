@@ -1,0 +1,36 @@
+@(message: String)
+@main("sales manager") {
+
+    @if(message != null){
+        @message
+    }
+
+    <h1>Registro de usuario</h1>
+    <form action="@routes.Application.authenticate()" method="post">
+        <fieldset>
+            <div class="container">
+                <table>
+                    <tr>
+                        <th>
+                            <label><b>Nombre de usuario</b></label>
+                        </th>
+                        <th>
+                            <input type="text" placeholder="Digita tu nombre de usuario" name="userName" required>
+
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label><b>Contraseña</b></label>
+                        </th>
+                        <th>
+                            <input type="password" placeholder="Digita la contraseña" name="pass" required>
+                        </th>
+                    </tr>
+
+                </table>
+                <button type="submit">Login</button>
+            </div>
+        </fieldset>
+    </form>
+}

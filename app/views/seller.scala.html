@@ -1,0 +1,33 @@
+@(message : String, list : List[ItemEntity], userName : String)
+
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    @message
+    <form action="@routes.SellerController.sell()" method="post">
+        <input type="hidden" value="@userName" name="userName">
+        <table>
+            <tr>
+                <th>Nombre producto</th>
+                <th>Descripción</th>
+                <th>Cantidad</th>
+                <th>Cantidad a comprar</th>
+            </tr>
+            @for(item <- list) {
+                <tr>
+                    <th><input type="text" name="txt@item.getId()" value="@item.getName()" disabled></th>
+                    <th><input type="text" name="txt@item.getId()" value="@item.getDescription()" disabled></th>
+                    <th><input type="text" name="txt@item.getId()" value="@item.getQuantity()" disabled></th>
+                    <th><input type="text" name="@item.getId()-@item.getName()-@item.getQuantity" value="0"></th>
+                </tr>
+
+            }
+        </table>
+        <th><button type="submit">Comprar</button></th>
+    </form>
+</body>
+</html>
