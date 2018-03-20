@@ -79,9 +79,6 @@ public class SellerController extends Controller {
         if (toBuy < 0) {
            return "En el campo Cantidad a comprar, por favor ingrese un valor numérico positivo";
         }
-        if (toBuy == 0) {
-            return "Productos disponibles";
-        }
         int currentQuantity = Integer.parseInt((String) hashMap.get("quantity"));
 
         if (!validateQuantity(toBuy, currentQuantity)) {
