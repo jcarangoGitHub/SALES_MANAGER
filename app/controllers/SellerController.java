@@ -4,6 +4,7 @@ import persistence.BuysByUserPersistence;
 import persistence.ItemPersistence;
 import play.mvc.Controller;
 import play.mvc.Result;
+import utils.SellerUtil;
 import views.html.seller;
 
 import java.util.HashMap;
@@ -15,10 +16,20 @@ public class SellerController extends Controller {
 
     public static Result sell() {
         Set<String> keySet = request().body().asFormUrlEncoded().keySet();
-        Iterator<String> ite = keySet.iterator();
         Map<String, String[]> values = request().body().asFormUrlEncoded();
         String userName = values.get("userName")[0];
+        String message = validateBuy(keySet);
+        ItemPersistence itemPersistence = new ItemPersistence();
+        if (message.isEmpty()) {
+            updateQuantities(keySet.iterator(), userName);
+            message = "Compra exitosa";
+        }
 
+        return ok(seller.render(message, itemPersistence.getAllItems(), userName));
+    }
+
+    private static String validateBuy(Set<String> keySet) {
+        Iterator<String> ite = keySet.iterator();
         String message = "";
         boolean valid = false;
         while (ite.hasNext()){
@@ -27,21 +38,13 @@ public class SellerController extends Controller {
                 continue;
             }
             Map hashMap = getMapItems(s);
-            message = getMessage(hashMap);
+            message = SellerUtil.getMessage(hashMap);
             valid = message.isEmpty();
             if (!valid) {
                 break;
             }
         }
-
-        ItemPersistence itemPersistence = new ItemPersistence();
-        if (valid) {
-            updateQuantities(keySet.iterator(), userName);
-            message = "Compra exitosa";
-        }
-
-
-        return ok(seller.render(message, itemPersistence.getAllItems(), userName));
+        return message;
     }
 
     private static void updateQuantities(Iterator<String> ite, String userName) {
@@ -55,54 +58,10 @@ public class SellerController extends Controller {
             }
             Map hashMap = getMapItems(s);
             itemPersistence.updateQauntity(itemPersistence.getItemById(Integer.parseInt((String) hashMap.get("id"))),
-                    getNewValue(hashMap));
+                    SellerUtil.getNewValue(hashMap));
             buysByUserPersistence.saveBuy(userName, (String) hashMap.get("name"),
                     Integer.parseInt((String) hashMap.get("toBuy")));
         }
-
-
-    }
-
-    private static Integer getNewValue(Map hashMap) {
-        Integer currentQuantity = Integer.parseInt((String) hashMap.get("quantity"));
-        Integer toBuyQuantity = Integer.parseInt((String) hashMap.get("toBuy"));
-
-        return currentQuantity - toBuyQuantity;
-    }
-
-    private static String getMessage(Map hashMap) {
-        String message = "";
-        if (null == hashMap.get("toBuy")) {
-            return message;
-        }
-        int toBuy = getToBuyNumeric(hashMap);
-        if (toBuy < 0) {
-           return "En el campo Cantidad a comprar, por favor ingrese un valor numérico positivo";
-        }
-        int currentQuantity = Integer.parseInt((String) hashMap.get("quantity"));
-
-        if (!validateQuantity(toBuy, currentQuantity)) {
-            message = "La cantidad del producto: " + hashMap.get("name") + " que desea comprar: "+ hashMap.get("toBuy")
-                    + ", supera la cantidad disponible ";
-        }
-
-        return message;
-    }
-
-    private static int getToBuyNumeric(Map hashMap) {
-        try {
-            return Integer.parseInt((String) hashMap.get("toBuy"));
-        }catch (Exception exc) {
-            return -1;
-        }
-    }
-
-    private static boolean validateQuantity(int toBuy, int currentQuantity) {
-        if (toBuy > currentQuantity) {
-            return false;
-        }
-        return true;        
-        
     }
 
     private static Map getMapItems(String s) {
