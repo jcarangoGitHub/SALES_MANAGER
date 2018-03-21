@@ -1,0 +1,47 @@
+h1 {
+    color: #fff;
+    font-family: 'Cormorant Infant';
+    font-size: 72px;
+    font-weight: 700;
+    line-height: 72px;
+    letter-spacing: -1px;
+    margin-bottom: 48px;
+    text-align: center;
+}
+
+h1:after {
+    color: #1fcfcb;
+    display: block;
+    content: '. . .';
+    font-size: 26px;
+    line-height: 24px;
+    height: 24px;
+    margin: 48px auto;
+}
+
+p {
+    color: #bbc8d8;
+    font-family: 'Lato';
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 36px;
+    margin-bottom: 36px;
+    text-align: center;
+}
+
+fieldset{
+  border: 1px solid rgb(0, 89, 179);
+  width: 400px;
+  margin:auto;
+}
+
+.button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
